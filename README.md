@@ -44,6 +44,8 @@ mikrotik-tg-command-gateway/
 
 ├── scripts/
 
+│   ├── TG_Step1_StateFile.rsc (Run this once to create the 2 files needed in flash folder)
+
 │   ├── TG_Poll.rsc
 
 │   ├── TG_Step2_FetchNew.rsc
