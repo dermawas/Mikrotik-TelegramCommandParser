@@ -54,7 +54,7 @@ mikrotik-tg-command-gateway/
 
 ├── BlockPCMultimedia.rsc
 
-├── UnblockLaptopKid1.rsc
+├── UnblockPCMUltimedia.rsc
 
 │
 
