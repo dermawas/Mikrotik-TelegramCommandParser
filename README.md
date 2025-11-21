@@ -50,15 +50,15 @@ mikrotik-tg-command-gateway/
 
 │   └── TG_Step3_RunCommand.rsc
 
+│   ├── BlockPCMultimedia.rsc
+
+│   ├── UnblockPCMUltimedia.rsc
+
+│   ├── TGBotSenderScript.rsc
+
 │
 
-├── BlockPCMultimedia.rsc
-
-├── UnblockPCMUltimedia.rsc
-
-│
-
-├── flash/
+│── flash/
 
 │   ├── tg_lastupdateid.txt
 
