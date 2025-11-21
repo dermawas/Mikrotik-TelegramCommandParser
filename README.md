@@ -54,18 +54,17 @@ Secure private Telegram group controls everything
 ✔️ Fully Compatible with RouterOS v6 & v7
 📁 Recommended File Structure
 mikrotik-tg-command-gateway/
-│
 ├── scripts/
 │   ├── TG_Poll.rsc
 │   ├── TG_Step2_FetchNew.rsc
 │   ├── TG_Step3_RunCommand.rsc
 │   ├── BlockPCMultimedia.rsc
 │   ├── UnblockLaptopKid1.rsc
-│   ├── (your custom scripts).rsc
+│   └── (your custom scripts).rsc
 │
 ├── flash/
 │   ├── tg_lastupdateid.txt
-│   ├── tg_updates.txt
+│   └── tg_updates.txt
 │
 └── README.md
 
