@@ -39,20 +39,35 @@ Compatible with RouterOS v6 (tested on 6.49.x)
 !AnyScriptName
 
 📁 Recommended Repository Structure
+
 mikrotik-tg-command-gateway/
+
 ├── scripts/
+
 │   ├── TG_Poll.rsc
+
 │   ├── TG_Step2_FetchNew.rsc
-│   ├── TG_Step3_RunCommand.rsc
-│   ├── BlockPCMultimedia.rsc
-│   ├── UnblockLaptopKid1.rsc
-│   └── (your custom scripts).rsc
+
+│   └── TG_Step3_RunCommand.rsc
+
 │
+
+├── BlockPCMultimedia.rsc
+
+├── UnblockLaptopKid1.rsc
+
+│
+
 ├── flash/
+
 │   ├── tg_lastupdateid.txt
+
 │   └── tg_updates.txt
+
 │
+
 └── README.md
+
 
 🧠 Architecture Overview
 
