@@ -1,30 +1,41 @@
 📡 MikroTik Telegram Command Gateway
 
-A lightweight, reliable RouterOS automation system that lets you run MikroTik scripts remotely using Telegram commands.
+A lightweight, reliable RouterOS automation system that lets you trigger MikroTik scripts remotely using Telegram commands — without exposing your router or using unsafe webhooks.
 
-Designed for:
+This system is built for:
 
-Block/Unblock devices
+Blocking/unblocking devices
 
-Trigger automation
+Running automation scripts
 
-Run RouterOS scripts easily
+Secure remote control via a private Telegram group
 
-Secure private Telegram group control
+Persisting state across reboots (flash storage)
 
-Survives reboots (flash/ storage)
-
-Fully compatible with RouterOS v6
+Pure RouterOS scripting (no external servers)
 
 🚀 Features
+✔️ Safe & Stateless
 
-✔ Run any MikroTik script using Telegram commands
-✔ Stateless polling (safe for reboot, safe for daily run)
-✔ Minimal JSON parsing (RouterOS-friendly)
-✔ Uses flash/ so files are persistent
-✔ Runs automatically via scheduler
-✔ No PIN/password needed — pure !CommandName format
-✔ Supports unlimited scripts:
+No background server
+
+No webhook listener
+
+Uses Telegram getUpdates polling (safe on reboot & daily operation)
+
+✔️ Persistent Storage
+
+Uses flash/ directory so state survives reboot
+
+✔️ Minimal JSON Parsing
+
+Fully compatible with RouterOS scripting language
+
+Efficient processing of small JSON payloads
+
+✔️ Unlimited Commands
+
+Works with any script you create:
 
 !BlockPCMultimedia
 !UnblockLaptopKid1
@@ -32,19 +43,34 @@ Fully compatible with RouterOS v6
 !UnblockAll
 !AnyScriptName
 
-📁 File Structure (Recommended)
-mikrotik-tg-command-gateway/
- ├─ scripts/
- │   ├─ TG_Poll.rsc
- │   ├─ TG_Step2_FetchNew.rsc
- │   ├─ TG_Step3_RunCommand.rsc
- │   ├─ BlockPCMultimedia.rsc
- │   ├─ UnblockLaptopKid1.rsc
- │   └─ ...
- ├─ README.md
- └─ LICENSE (optional)
+✔️ Secure
 
-⚙️ Architecture Overview
+Only reacts to messages from a specific Telegram chat ID
+
+No passwords, no PIN needed
+
+Secure private Telegram group controls everything
+
+✔️ Fully Compatible with RouterOS v6 & v7
+📁 Recommended File Structure
+mikrotik-tg-command-gateway/
+│
+├── scripts/
+│   ├── TG_Poll.rsc
+│   ├── TG_Step2_FetchNew.rsc
+│   ├── TG_Step3_RunCommand.rsc
+│   ├── BlockPCMultimedia.rsc
+│   ├── UnblockLaptopKid1.rsc
+│   ├── (your custom scripts).rsc
+│
+├── flash/
+│   ├── tg_lastupdateid.txt
+│   ├── tg_updates.txt
+│
+└── README.md
+
+
+🧠 Architecture Overview
 
 The system works in three layers:
 
@@ -57,159 +83,86 @@ Fetches ONLY the newest Telegram update using:
 getUpdates?offset=lastUpdateId+1&limit=1
 
 
-Stores JSON into:
+Saves JSON into:
 
 flash/tg_updates.txt
 
 2️⃣ TG_Step3_RunCommand
 
-Reads the JSON, extracts:
+Reads tg_updates.txt
+Extracts:
 
 update_id
 
-chat.id
+chat_id
 
-text
+message text
 
-Runs a script if:
+Executes MikroTik script if:
 
-Chat ID matches
+chat_id matches your group
 
-Message starts with "!"
+message begins with !
 
-Script exists in /system script
+Example:
 
-Then updates:
+!BlockLaptopEthan
+
+
+State is saved to:
 
 flash/tg_lastupdateid.txt
 
 3️⃣ TG_Poll (Scheduler Wrapper)
 
-Runs Step2 + Step3 continuously.
+A small wrapper script that runs:
 
-🔧 Installation Guide
-1. Create persistent files (survive reboot)
-
-Go to MikroTik Files and create:
-
-flash/tg_lastupdateid.txt   (content: 0)
-flash/tg_updates.txt        (content: empty)
+TG_Step2_FetchNew
+TG_Step3_RunCommand
 
 
-Or via terminal:
+Used by the scheduler (e.g., every 10 seconds).
 
-/file print file=flash/tg_lastupdateid.txt
-/file set [find name="flash/tg_lastupdateid.txt"] contents="0"
+🕒 Scheduler Setup
 
- /file print file=flash/tg_updates.txt
-/file set [find name="flash/tg_updates.txt"] contents=""
+Use:
 
-2. Create scripts in /system script
-TG_Step2_FetchNew.rsc
+/system scheduler add name=TG_CommandGateway interval=10s on-event=TG_Poll
 
-(Fetch newest update)
+🔐 Security Considerations
 
-<< paste your final working TG_Step2_FetchNew script here >>
+Always store Bot Token inside scripts securely
 
-TG_Step3_RunCommand.rsc
+Only allow commands from a private Telegram group
 
-(Parse JSON and run MikroTik script)
+Chat ID is hard-coded and checked in step 3
 
-<< paste your final working TG_Step3_RunCommand script here >>
+No remote API port is exposed
 
-TG_Poll.rsc
+🧩 Example Commands
 
-(Run Step2 then Step3)
-
-/system script run TG_Step2_FetchNew
-/system script run TG_Step3_RunCommand
-
-3. Create scheduler for auto-run
-
-Run every 10 seconds (recommended):
-
-/system scheduler add name="TG_Poll" interval=10s on-event=TG_Poll
-
-🎮 Usage
-
-In your Telegram group, simply type:
+Inside Telegram:
 
 !BlockPCMultimedia
 !UnblockLaptopKid1
 !BlockAll
-!UnblockAll
+!MyCustomScript
 
 
-The script name must match EXACTLY the script you have inside:
+Inside RouterOS (script names must match):
 
-/system script print
+/system script add name=BlockPCMultimedia source="..."
 
+📦 Included Scripts
+Script	Description
+TG_Poll.rsc	Scheduler wrapper
+TG_Step2_FetchNew.rsc	Fetch new updates
+TG_Step3_RunCommand.rsc	Parse & execute commands
+Custom scripts	Your automation (blocking, enabling, actions)
+📝 License
 
-Example:
+MIT License (optional — add if you want)
 
-Telegram command	RouterOS Script
-!BlockLaptopKid1	BlockLaptopKid1
-!UnblockAll	UnblockAll
-!PingTest	PingTest
-🧪 Example: Block Tab Kid1
+🙌 Credits
 
-Send:
-
-!BlockTabKid1
-
-
-RouterOS log:
-
-TG_Step3: scriptName=BlockTabKid1
-TG_Step3: executed BlockTabKid1
-TG_Step3: state updated OK (828532939)
-
-🔒 Security Notes
-
-Only your specified Telegram Chat ID is allowed.
-
-No PIN, no authentication keywords — only chat.id validation.
-
-Use a private Telegram group.
-
-Bot must be an admin or allowed to read messages.
-
-🩺 Troubleshooting
-❗ Step3 shows: updateId empty, abort
-
-This is correct behavior when:
-
-{"ok":true,"result":[]}
-
-
-Means: no new command.
-
-❗ Step3 prompts “value:”
-
-This happens when your script does not exit early.
-
-Your fixed version now contains:
-
-if no update_id → return
-
-❗ File disappears after reboot
-
-You must use:
-
-flash/tg_lastupdateid.txt
-flash/tg_updates.txt
-
-🗂 Versioning Suggestion
-
-Use tags:
-
-v1.0 – Basic polling
-v1.1 – Flash storage support
-v1.2 – No-PIN mode
-v1.3 – Full JSON parsing fix
-
-🌟 Credits
-
-Created by Suseno Dermawan
-Assisted by ChatGPT
-System: MikroTik RouterOS v6
+Created by Suseno Dermawan — built live via debugging & iterative refinement.
