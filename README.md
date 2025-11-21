@@ -48,15 +48,15 @@ mikrotik-tg-command-gateway/
 
 │   ├── TG_Poll.rsc
 
-│   ├── TG_Step2_FetchNew.rsc
+│   ├── TG_Step2_FetchNew.rsc (Fill in the field with your own <botToken>)
 
-│   └── TG_Step3_RunCommand.rsc
+│   └── TG_Step3_RunCommand.rsc (Fill in the field with your own <chatID>
 
-│   ├── BlockPCMultimedia.rsc
+│   ├── BlockPCMultimedia.rsc (Sample Block Script, copy & modify as necessary)
 
-│   ├── UnblockPCMUltimedia.rsc
+│   ├── UnblockPCMUltimedia.rsc (Sample Unblock Script, copy & modify as necessary)
 
-│   ├── TGBotSenderScript.rsc
+│   ├── TGBotSenderScript.rsc (Fill in with your telegram <botToken> & <chatID>)
 
 │
 
